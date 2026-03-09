@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AXION Terminal — Professional financial data terminal" />
+    <meta name="theme-color" content="#030803" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>AXION TERMINAL v3.0</title>
+    <style>
+      /* Prevent flash of white on load */
+      html, body {
+        background: #030803;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+      #root {
+        height: 100%;
+        width: 100%;
+      }
+      /* Loading screen */
+      #boot-screen {
+        position: fixed;
+        inset: 0;
+        background: #030803;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        font-family: 'IBM Plex Mono', 'Courier New', monospace;
+        gap: 8px;
+        transition: opacity 0.4s ease;
+      }
+      #boot-screen.hidden { opacity: 0; pointer-events: none; }
+      .boot-logo {
+        font-size: 28px;
+        font-weight: 700;
+        color: #00d26a;
+        letter-spacing: 8px;
+        margin-bottom: 8px;
+      }
+      .boot-line {
+        font-size: 10px;
+        color: #2a4a2a;
+        letter-spacing: 2px;
+        animation: bootBlink 0.8s ease infinite;
+      }
+      .boot-sub { font-size: 9px; color: #1a3a1a; letter-spacing: 1px; }
+      @keyframes bootBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    </style>
+  </head>
+  <body>
+    <!-- Boot screen shown while React loads -->
+    <div id="boot-screen">
+      <div class="boot-logo">AXION</div>
+      <div class="boot-sub">TERMINAL v3.0 · FINANCIAL DATA SYSTEM</div>
+      <div class="boot-line">INITIALIZING...</div>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Hide boot screen once React has mounted
+      window.__axionReady = function() {
+        const boot = document.getElementById('boot-screen');
+        if (boot) {
+          boot.classList.add('hidden');
+          setTimeout(() => boot.remove(), 500);
+        }
+      };
+    </script>
+  </body>
+</html>

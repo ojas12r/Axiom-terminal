@@ -1,0 +1,47 @@
+# ─────────────────────────────────────────────────────────────
+# AXION Terminal — Render.com Deployment Config
+# Deploy steps:
+#   1. Push this entire folder to a GitHub/GitLab repo
+#   2. Go to https://dashboard.render.com → New → Static Site
+#   3. Connect your repo
+#   4. Render auto-detects this file and configures everything
+# ─────────────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: axion-terminal
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: true
+
+    # Environment — add your own vars here when wiring live data
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+
+    # SPA routing — all paths serve index.html
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    headers:
+      # Security headers
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      # Cache static assets aggressively
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      # Don't cache index.html
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
